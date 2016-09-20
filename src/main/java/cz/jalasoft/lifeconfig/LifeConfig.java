@@ -1,11 +1,26 @@
 package cz.jalasoft.lifeconfig;
 
-import cz.jalasoft.lifeconfig.conversion.*;
+import cz.jalasoft.lifeconfig.converterprovider.*;
+import cz.jalasoft.lifeconfig.converter.Converter;
 import cz.jalasoft.lifeconfig.converter.ConverterRepository;
+import cz.jalasoft.lifeconfig.format.ConfigFormat;
+import cz.jalasoft.lifeconfig.format.HoconFormat;
+import cz.jalasoft.lifeconfig.format.JavaPropertyFormat;
+import cz.jalasoft.lifeconfig.format.YamlFormat;
+import cz.jalasoft.lifeconfig.logger.Logger;
+import cz.jalasoft.lifeconfig.logger.LoggerFactory;
+import cz.jalasoft.lifeconfig.reader.ConfigReader;
+import cz.jalasoft.lifeconfig.reader.ConvertingConfigReader;
+import cz.jalasoft.lifeconfig.reader.ReloadingConfigReader;
+import cz.jalasoft.lifeconfig.source.ConfigSource;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static cz.jalasoft.lifeconfig.util.ArgumentAssertion.mustNotBeNull;
+import static cz.jalasoft.lifeconfig.util.ArgumentAssertion.mustNotBeNullOrEmpty;
+import static cz.jalasoft.lifeconfig.source.ClassPathConfigSource.*;
 
 /**
  * The main entry point of the LifeConfig library. It allows
@@ -98,11 +113,11 @@ public final class LifeConfig<T> {
     private boolean isLife;
 
     private final Class<T> type;
-    private final ConverterRegistry converterRegistry;
+    private final ConverterRepository converterRepository;
 
     private LifeConfig(Class<T> type) {
         this.type = type;
-        this.converterRegistry = ConverterRegistry.standardRegistry();
+        this.converterRepository = new ConverterRepository();
 
         LOGGER.debug("-----------------------------");
         LOGGER.debug("Initialization of LifeConfig.");
@@ -118,7 +133,7 @@ public final class LifeConfig<T> {
     public <C> LifeConfig<T> addConverter(Converter<? extends Object, ? extends Object> converter) {
         mustNotBeNull(converter, "Converter to be registered must not be null.");
 
-        converterRegistry.registerConverter((Converter<Object, Object>) converter);
+        converterRepository.registerConverter(converter);
 
         LOGGER.debug("Converter of type " + converter.getClass() + " registered.");
         return this;
@@ -162,7 +177,7 @@ public final class LifeConfig<T> {
         mustNotBeNullOrEmpty(resourceName, "Resource name");
 
         LOGGER.debug("Classpath resource specified: " + resourceName);
-        return from(classpath(resourceName));
+        return from(defaultClassloader(resourceName));
     }
 
     public LifeConfig<T> fromClasspath(ClassLoader classloader, String resourceName) {
@@ -170,7 +185,7 @@ public final class LifeConfig<T> {
         mustNotBeNullOrEmpty(resourceName, "Resource name");
 
         LOGGER.debug("Classpath resource specified: " + resourceName);
-        return from(classpath(classloader, resourceName));
+        return from(classLoader(classloader, resourceName));
     }
 
     public LifeConfig<T> fromClasspath(Class<?> type, String resourceName) {
@@ -178,7 +193,7 @@ public final class LifeConfig<T> {
         mustNotBeNullOrEmpty(resourceName, "Resource name");
 
         LOGGER.debug("Classpath resource specified: " + resourceName);
-        return from(classpath(type, resourceName));
+        return from(clazz(type, resourceName));
     }
 
     public LifeConfig<T> from(ConfigSource source) {
@@ -284,7 +299,7 @@ public final class LifeConfig<T> {
         LOGGER.debug("Validation of type " + type + " was successful");
 
         PropertyKeyResolver keyResolver = prefixAnnotationBefore(standardMethodKeyResolver());
-        PropertyReader reader = reader();
+        ConfigReader reader = reader(converterRepository);
 
         return ConfigProxyAssembler.forType(type)
                 .propertyReader(reader)
@@ -302,19 +317,19 @@ public final class LifeConfig<T> {
         }
     }
 
-    private PropertyReader reader() {
-        Conversion conversion = conversion(converterRegistry);
-        PropertyReader convertingReader = new ConvertingPropertyReader(source, format, conversion);
-        return new ReloadingPropertyReader(convertingReader, () -> source.lastModifiedMillis(), isLife);
+    private ConfigReader reader(ConverterRepository converterRepository) {
+        ConverterProvider conversion = conversion(converterRepository);
+        ConfigReader convertingReader = new ConvertingConfigReader(source, format, conversion);
+        return new ReloadingConfigReader(convertingReader, () -> source.lastModifiedMillis(), isLife);
     }
 
-    private Conversion conversion(ConverterRepository converterRepository) {
-        Conversion throwingExceptionConversion = new EmptyObjectReturningConversion();
-        Conversion defaultConversion = new ViaStringConversion(throwingExceptionConversion, converterRepository);
-        Conversion primitiveTypesConversion = new PrimitiveAndBoxedTypesConversion(defaultConversion);
-        Conversion sameTypeConversion = new SameTypesConversion(primitiveTypesConversion);
-        Conversion customConverterConversion = new RegisteredConverterConversion(sameTypeConversion, converterRepository);
-        Conversion annotationConversion = new ConverterAnnotationConversion(customConverterConversion);
+    private ConverterProvider conversion(ConverterRepository converterRepository) {
+        ConverterProvider throwingExceptionConversion = new ConverterNotFoundThrowingConverterProvider();
+        ConverterProvider defaultConversion = new ViaStringConverter(throwingExceptionConversion, converterRepository);
+        ConverterProvider primitiveTypesConversion = new PrimitiveAndBoxedTypesConverterProvider(defaultConversion);
+        ConverterProvider sameTypeConversion = new SameTypesConverterProvider(primitiveTypesConversion);
+        ConverterProvider customConverterConversion = new RegisteredConverterProvider(sameTypeConversion, converterRepository);
+        ConverterProvider annotationConversion = new ConverterAnnotationProvider(customConverterConversion);
 
         return annotationConversion;
     }

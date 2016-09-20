@@ -1,9 +1,6 @@
-package cz.jalasoft.lifeconfig.conversion;
+package cz.jalasoft.lifeconfig.converterprovider;
 
-import cz.jalasoft.lifeconfig.converter.CollectionConverter;
-import cz.jalasoft.lifeconfig.converter.Converter;
-import cz.jalasoft.lifeconfig.converter.ConverterException;
-import cz.jalasoft.lifeconfig.converter.ConverterRepository;
+import cz.jalasoft.lifeconfig.converter.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -12,46 +9,46 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
+ * This provider simply tries to find any converter registered by the client.
+ *
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-09-19.
  */
-public final class RegisteredConverterConversion implements Conversion {
+public final class RegisteredConverterProvider implements ConverterProvider {
 
-    private final Conversion decorated;
+    private final ConverterProvider decorated;
     private final ConverterRepository converterRepository;
 
-    public RegisteredConverterConversion(Conversion decorator, ConverterRepository converterRepository) {
+    public RegisteredConverterProvider(ConverterProvider decorator, ConverterRepository converterRepository) {
         this.decorated = decorator;
         this.converterRepository = converterRepository;
     }
 
     @Override
-    public Optional<Object> convert(Object sourceValue, Method method) throws ConverterException {
+    public Converter converter(Object sourceValue, Method method) throws ConverterNotFoundException {
 
         Class<?> returnType = method.getReturnType();
         if (Collection.class.isAssignableFrom(returnType)) {
-            return convertCollection(sourceValue, method);
+            return collectionConverter(sourceValue, method);
         }
 
         return convertScalar(sourceValue, method);
     }
 
-    private Optional<Object> convertScalar(Object sourceValue, Method method) throws ConverterException {
+    private Converter convertScalar(Object sourceValue, Method method) throws ConverterNotFoundException {
         Class<?> sourceType = sourceValue.getClass();
         Class<?> targetType = method.getReturnType();
 
         Optional<Converter<Object, Object>> maybeConverter = converterRepository.converter(sourceType, targetType);
         if (!maybeConverter.isPresent()) {
-            return decorated.convert(sourceValue, method);
+            return decorated.converter(sourceValue, method);
         }
 
         Converter<Object, Object> converter = maybeConverter.get();
-
-        Object result = converter.convert(sourceValue);
-        return Optional.of(result);
+        return converter;
     }
 
-    private Optional<Object> convertCollection(Object sourceValue, Method method) throws ConverterException {
+    private Converter collectionConverter(Object sourceValue, Method method) throws ConverterNotFoundException {
         if (!(sourceValue instanceof Collection)) {
             throw new RuntimeException("Cannot convert property value of type " + sourceValue.getClass() + " to a collection.");
         }
@@ -67,21 +64,19 @@ public final class RegisteredConverterConversion implements Conversion {
             if (!maybeSourceType.isPresent()) {
                 //the source collection must be empty
                 CollectionConverter converter = new CollectionConverter(null, sourceType);
-                Object result = converter.convert((Collection)sourceValue);
-                return Optional.of(result);
+                return converter;
             }
 
             Optional<Converter<Object, Object>> maybeItemConverter = converterRepository.converter(maybeSourceType.get(), maybeTargetType.get());
             if (!maybeItemConverter.isPresent()) {
-                return decorated.convert(sourceValue, method);
+                return decorated.converter(sourceValue, method);
             }
 
             CollectionConverter collectionConverter = new CollectionConverter(maybeItemConverter.get(), method.getReturnType());
-            Object result = collectionConverter.convert((Collection) sourceValue);
-            return Optional.of(result);
+            return collectionConverter;
         }
 
-        return Optional.of(sourceValue);
+        return Converters.identity(sourceType);
     }
 
     private Optional<Class<?>> extractGenericType(Type type) {

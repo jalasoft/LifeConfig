@@ -1,6 +1,9 @@
 package cz.jalasoft.lifeconfig.reader;
 
 
+import cz.jalasoft.lifeconfig.converterprovider.ConverterNotFoundException;
+import cz.jalasoft.lifeconfig.converter.ConverterException;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -22,8 +25,11 @@ public interface ConfigReader {
      * @param method a method that is being invoked by a proxy
      * @return never null
      * @throws IOException if an error occurred during retrieving a property.
+     * @throws ConverterNotFoundException if there is no converter that could convert value
+     * read from the source to the desired type described by the provided method return type.
+     * @throws ConverterException if an error occurred during converting a value
      */
-    Optional<Object> readProperty(String key, Method method) throws IOException;
+    Optional<Object> readProperty(String key, Method method) throws IOException, ConverterNotFoundException, ConverterException;
 
     /**
      * Reads all resources from a resource.

@@ -25,7 +25,7 @@ import static cz.jalasoft.lifeconfig.util.ArgumentAssertion.*;
  */
 public final class ClassPathConfigSource implements ConfigSource {
 
-    public static ClassPathConfigSource fromDefaultClassloader(String resourceName) {
+    public static ClassPathConfigSource defaultClassloader(String resourceName) {
         mustNotBeNullOrEmpty(resourceName, "Name of a  classpath resource.");
 
         URL resourceUrl = ClassPathConfigSource.class.getClassLoader().getResource(resourceName);
@@ -39,7 +39,7 @@ public final class ClassPathConfigSource implements ConfigSource {
         return new ClassPathConfigSource(resourceUrl, inputStreamProvider);
     }
 
-    public static ClassPathConfigSource fromClassLoader(ClassLoader loader, String resourceName) {
+    public static ClassPathConfigSource classLoader(ClassLoader loader, String resourceName) {
         mustNotBeNull(loader, "Loader");
         mustNotBeNullOrEmpty(resourceName, "Name of a  classpath resource.");
 
@@ -54,7 +54,7 @@ public final class ClassPathConfigSource implements ConfigSource {
         return new ClassPathConfigSource(resourceUrl, inputStreamProvider);
     }
 
-    public static ClassPathConfigSource fromClass(Class<?> loader, String resourceName) {
+    public static ClassPathConfigSource clazz(Class<?> loader, String resourceName) {
         mustNotBeNull(loader, "Loader");
         mustNotBeNullOrEmpty(resourceName, "Name of a  classpath resource.");
 

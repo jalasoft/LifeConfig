@@ -1,6 +1,9 @@
 package cz.jalasoft.lifeconfig.reader;
 
-import cz.jalasoft.lifeconfig.conversion.Conversion;
+import cz.jalasoft.lifeconfig.converterprovider.ConverterNotFoundException;
+import cz.jalasoft.lifeconfig.converterprovider.ConverterProvider;
+import cz.jalasoft.lifeconfig.converter.Converter;
+import cz.jalasoft.lifeconfig.converter.ConverterException;
 import cz.jalasoft.lifeconfig.format.ConfigFormat;
 import cz.jalasoft.lifeconfig.format.PropertyValue;
 import cz.jalasoft.lifeconfig.source.ConfigSource;
@@ -17,16 +20,16 @@ public final class ConvertingConfigReader implements ConfigReader {
 
     private final ConfigSource configSource;
     private final ConfigFormat configFormat;
-    private final Conversion conversion;
+    private final ConverterProvider converterProvider;
 
-    public ConvertingConfigReader(ConfigSource configSource, ConfigFormat configFormat, Conversion conversion) {
+    public ConvertingConfigReader(ConfigSource configSource, ConfigFormat configFormat, ConverterProvider conversion) {
         this.configSource = configSource;
         this.configFormat = configFormat;
-        this.conversion = conversion;
+        this.converterProvider = conversion;
     }
 
     @Override
-    public Optional<Object> readProperty(String key, Method method) {
+    public Optional<Object> readProperty(String key, Method method) throws IOException, ConverterNotFoundException, ConverterException {
         PropertyValue value = configFormat.readProperty(key);
 
         if (value.isNotFound()) {
@@ -37,12 +40,9 @@ public final class ConvertingConfigReader implements ConfigReader {
             return Optional.empty();
         }
 
-        try {
-            Object targetObject = conversion.convert(value.value(), method);
-            return Optional.of(targetObject);
-        } catch (ConverterException exc) {
-            throw new RuntimeException(exc);
-        }
+        Converter<Object, Object> converter = converterProvider.converter(value.value(), method);
+        Object result = converter.convert(value.value());
+        return Optional.of(result);
     }
 
     @Override
