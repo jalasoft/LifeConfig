@@ -7,12 +7,15 @@ import cz.jalasoft.lifeconfig.format.ConfigFormat;
 import cz.jalasoft.lifeconfig.format.HoconFormat;
 import cz.jalasoft.lifeconfig.format.JavaPropertyFormat;
 import cz.jalasoft.lifeconfig.format.YamlFormat;
+import cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolver;
 import cz.jalasoft.lifeconfig.logger.Logger;
 import cz.jalasoft.lifeconfig.logger.LoggerFactory;
 import cz.jalasoft.lifeconfig.reader.ConfigReader;
 import cz.jalasoft.lifeconfig.reader.ConvertingConfigReader;
 import cz.jalasoft.lifeconfig.reader.ReloadingConfigReader;
 import cz.jalasoft.lifeconfig.source.ConfigSource;
+import cz.jalasoft.lifeconfig.source.FileConfigSource;
+import cz.jalasoft.lifeconfig.validation.ProxyInterfaceValidator;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +24,8 @@ import java.nio.file.Paths;
 import static cz.jalasoft.lifeconfig.util.ArgumentAssertion.mustNotBeNull;
 import static cz.jalasoft.lifeconfig.util.ArgumentAssertion.mustNotBeNullOrEmpty;
 import static cz.jalasoft.lifeconfig.source.ClassPathConfigSource.*;
+
+import static cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolvers.*;
 
 /**
  * The main entry point of the LifeConfig library. It allows
@@ -165,7 +170,7 @@ public final class LifeConfig<T> {
         }
 
         LOGGER.debug("File resource specified: " + path);
-        return from(file(path));
+        return from(new FileConfigSource(path));
     }
 
     /**
@@ -294,7 +299,7 @@ public final class LifeConfig<T> {
 
         checkAllInserted();
 
-        new ProxyInterfaceValidator(converterRegistry).validate(type);
+        new ProxyInterfaceValidator(converterRepository).validate(type);
 
         LOGGER.debug("Validation of type " + type + " was successful");
 
@@ -302,8 +307,8 @@ public final class LifeConfig<T> {
         ConfigReader reader = reader(converterRepository);
 
         return ConfigProxyAssembler.forType(type)
-                .propertyReader(reader)
-                .resolvingKey(keyResolver)
+                .configReader(reader)
+                .keyResolver(keyResolver)
                 .life(isLife)
                 .assemble();
     }

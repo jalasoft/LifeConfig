@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 /**
  * A responsibility of the key resolver is to
  * provide a string key derived from a provided method.
+ * The key should lead to a valid resource value.
  *
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-08-16.

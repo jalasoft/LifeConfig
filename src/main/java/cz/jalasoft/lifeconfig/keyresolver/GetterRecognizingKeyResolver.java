@@ -11,9 +11,9 @@ import java.lang.reflect.Method;
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-08-16.
  */
-final class GetterPropertyKeyResolver extends AbstractPropertyKeyResolverDecorator {
+final class GetterRecognizingKeyResolver extends AbstractPropertyKeyResolverDecorator implements PropertyKeyResolver {
 
-    GetterPropertyKeyResolver(PropertyKeyResolver decorated) {
+    GetterRecognizingKeyResolver(PropertyKeyResolver decorated) {
         super(decorated);
     }
 
