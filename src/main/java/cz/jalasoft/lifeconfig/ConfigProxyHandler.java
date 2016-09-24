@@ -1,6 +1,8 @@
 package cz.jalasoft.lifeconfig;
 
 
+import cz.jalasoft.lifeconfig.annotation.IgnoreProperty;
+import cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolver;
 import cz.jalasoft.lifeconfig.reader.ConfigReader;
 
 import java.lang.reflect.InvocationHandler;
@@ -9,6 +11,10 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import static cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolvers.prefixAnnotationBefore;
+import static cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolvers.standardMethodKeyResolver;
+import static cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolvers.staticPrefix;
 
 /**
  * @author Honza Lastovicka (lastovicka@avast.com)
@@ -65,8 +71,8 @@ final class ConfigProxyHandler implements InvocationHandler {
         Class<?> returnType = method.getReturnType();
         return ConfigProxyAssembler.forType(returnType)
                 .life(isLife)
-                .propertyReader(configReader)
-                .resolvingKey(staticPrefix(key, prefixAnnotationBefore(standardMethodKeyResolver())))
+                .configReader(configReader)
+                .keyResolver(staticPrefix(key, prefixAnnotationBefore(standardMethodKeyResolver())))
                 .assemble();
     }
 

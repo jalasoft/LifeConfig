@@ -17,6 +17,17 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.stream;
 
 /**
+ * A validator of a configuration interface and all other interfaces
+ * as return types of methods.
+ *
+ * <ul>
+ *     <li>Provided configuration type must be an interface</li>
+ *     <li>If an annotation {@link KeyPrefix} is present, then its value must not be null or empty</li>
+ *     <li>each method defined on the interface must have no parameter</li>
+ *     <li>each method that has the annotation {@link Key} must have not null or empty value</li>
+ *     <li>each method that has an annotation {@link Converter} the its value - class - must have constructor with no arguments</li>
+ * </ul>
+ *
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-07-26.
  */
@@ -94,7 +105,7 @@ public final class ProxyInterfaceValidator {
     }
 
     private void validateConverterHasParameterlessConstructorIfPresent(Method method) {
-        if (method.isAnnotationPresent(Converter.class)) {
+        if (!method.isAnnotationPresent(Converter.class)) {
             return;
         }
 

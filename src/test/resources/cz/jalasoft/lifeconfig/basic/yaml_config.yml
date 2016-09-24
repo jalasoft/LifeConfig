@@ -1,0 +1,5 @@
+test:
+  name: "Honzales"
+  myage: 32
+  my_good_day: 25 FEBRUARY
+  isAdult: true

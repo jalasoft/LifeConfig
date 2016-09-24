@@ -82,20 +82,7 @@ import static cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolvers.*;
  *  int age = config.getAge();
  * }
  *
- * <h3>ConverterProvider</h3>
- *
- * In case that configuration interface has complex class as a return type of any method,
- * LifeConfig allows registering a simpleConverter that would transform string representation in
- * according property into the complex type.
- *
- *  {@link #addConverter(Converter)}
- *
- *  or an annotation {@link cz.jalasoft.util.configuration.annotation.Converter} the
- *  designates a method on the configuration properties.
- *
- * <h3>Annotation</h3>
- *
- * //TODO
+ *  @see "https://github.com/jalasoft/LifeConfig"
  *
  * @author Honza Lastovicka
  */
