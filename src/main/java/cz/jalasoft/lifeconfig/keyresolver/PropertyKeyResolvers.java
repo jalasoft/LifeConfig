@@ -20,7 +20,7 @@ public final class PropertyKeyResolvers {
      * Gets a decorated existing key resolver with another resolver recognizing getter and
      * fall backing to the other resolver.
      *
-     * @param decorated
+     * @param decorated another resolver to be used for composition of final key
      * @return never null
      */
     public static PropertyKeyResolver getterExtractingOr(PropertyKeyResolver decorated) {
@@ -32,7 +32,7 @@ public final class PropertyKeyResolvers {
      * {@link cz.jalasoft.lifeconfig.annotation.Key} to resolve a key, otherwise it
      * delegates the existing (decorated) resolver.
      *
-     * @param decorated
+     * @param decorated another resolver to be used for composition of final key.
      * @return never null
      */
     public static PropertyKeyResolver keyAnnotationValueOr(PropertyKeyResolver decorated) {
@@ -43,7 +43,7 @@ public final class PropertyKeyResolvers {
      * Gets a decorated resolver with a resolver that looks for an annotation {@link cz.jalasoft.lifeconfig.annotation.KeyPrefix}
      * to prepend its value to a key resolved by the decorated resolver.
      *
-     * @param decorated
+     * @param decorated another resolver to be used for composition of final key
      * @return never null
      */
     public static PropertyKeyResolver prefixAnnotationBefore(PropertyKeyResolver decorated) {
@@ -54,8 +54,8 @@ public final class PropertyKeyResolvers {
      * Gets an existing resolver decorated by a resolver that simply prepends a key resolved by
      * the decorated resolver with a constant string.
      *
-     * @param prefix
-     * @param decorated
+     * @param prefix a prefix to be appended before key derived by the second argument
+     * @param decorated another resolver to be used for composition of finalv key
      * @return never null
      */
     public static PropertyKeyResolver staticPrefix(String prefix, PropertyKeyResolver decorated) {

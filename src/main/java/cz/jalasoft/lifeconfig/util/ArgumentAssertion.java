@@ -22,18 +22,6 @@ public final class ArgumentAssertion {
     }
 
     /**
-     * Throws {@link IllegalArgumentException} if nu,ber is negative
-     *
-     * @param number tested number
-     * @param name a name or description of the number - used in case the exception is thrown
-     */
-    public static void mustNotBeNegative(int number, String name) {
-        if (number < 0) {
-            throw new IllegalArgumentException(name + " must not be negative.");
-        }
-    }
-
-    /**
      * Throws {@link IllegalArgumentException} if value is null or empty
      *
      * @param value tested string
@@ -46,23 +34,9 @@ public final class ArgumentAssertion {
     }
 
     /**
-     * Throws {@link IllegalArgumentException} if a number belongs to a specified interval.
-     *
-     * @param value
-     * @param lowerBoundary
-     * @param higherBoudary
-     * @param name a name of the number, used in case the exception is thrown.
-     */
-    public static void mustBeBetweenIncluding(int value, int lowerBoundary, int higherBoudary, String name) {
-        if (value < lowerBoundary || value > higherBoudary) {
-            throw new IllegalArgumentException(name + " must be >= than " + lowerBoundary + " and =< than " + higherBoudary);
-        }
-    }
-
-    /**
      * Throws {@link IllegalArgumentException} if boolean value is false.
      *
-     * @param value
+     * @param value a boolean value to test
      * @param name a name or description of the boolean, used in case the exception is thrown.
      */
     public static void mustBeTrue(boolean value, String name) {

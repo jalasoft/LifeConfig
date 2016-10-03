@@ -13,7 +13,7 @@ import static cz.jalasoft.lifeconfig.format.PropertyValue.*;
 /**
  * An encapsulation of Hocon configuration format.
  *
- * @see {@link "https://github.com/typesafehub/config/blob/master/HOCON.md"}
+ * @see <a href="https://github.com/typesafehub/config/blob/master/HOCON.md">typesafe</a>
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-07-27.
  */

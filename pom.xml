@@ -6,7 +6,24 @@
 
     <groupId>com.github.jalasoft</groupId>
     <artifactId>LifeConfig</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1</version>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>A configuration library</description>
+    <url>http://github.com/jalasoft/LifeConfig</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/jalasoft/LifeConfig</url>
+        <connection>scm:git:git@github.com:jalasoft/LifeConfig.git</connection>
+        <developerConnection>scm:git:git@github.com:jalasoft/LifeConfig.git</developerConnection>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -51,8 +68,25 @@
             <artifactId>unitils-core</artifactId>
             <version>3.4.3</version>
         </dependency>
-
     </dependencies>
+
+
+
+    <developers>
+        <developer>
+            <email>jala.software@seznam.cz</email>
+            <name>Jan Lastovicka</name>
+            <url>https://github.com/jalasoft</url>
+            <id>lastovicka</id>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>

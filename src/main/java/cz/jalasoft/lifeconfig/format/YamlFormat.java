@@ -15,7 +15,7 @@ import static cz.jalasoft.lifeconfig.format.PropertyValue.*;
 /**
  * An encapsulation of Yaml format.
  *
- * @see {@link "http://yaml.org/"}
+ * @see <a href="http://yaml.org/">yaml.org</a>
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-07-27.
  */

@@ -4,7 +4,6 @@ package cz.jalasoft.lifeconfig.format;
  * An encapsulation of a result of a configuration
  * property reading.
  *
- * <p>
  * Basically after reading a configuration property
  * by {@link ConfigFormat} a result might be one of
  * the following values:
@@ -21,7 +20,6 @@ package cz.jalasoft.lifeconfig.format;
  * we want to retrieve a property by invoking a method returning another configuration interface
  * that will later lead to a regular value.
  *
- * </p>
  *
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-09-15.
@@ -90,7 +88,7 @@ public final class PropertyValue {
      * Gets whether this instance has value, that is, it has been created by
      * method {@link #found(Object)}
      *
-     * @return
+     * @return true if there is a value associated with given key
      */
     public boolean isFound() {
         return type == Type.FOUND;
@@ -100,7 +98,7 @@ public final class PropertyValue {
      * Gets whether this instance has no value because it does not exists, that
      * is, it has been created via method {@link #notFound()}
      *
-     * @return
+     * @return true is there is value with given key
      */
     public boolean isNotFound() {
         return type == Type.NOT_FOUND;
@@ -111,7 +109,8 @@ public final class PropertyValue {
      * is not complete. It means that an instance has been create by method
      * {@link #incompletePath()}
      *
-     * @return
+     * @return true if the value is not complete because its key is not complete
+     * to lead to a value.
      */
     public boolean isIncomplete() {
         return type == Type.INCOMPLETE_PATH;

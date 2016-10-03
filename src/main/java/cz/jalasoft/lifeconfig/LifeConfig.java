@@ -28,59 +28,8 @@ import static cz.jalasoft.lifeconfig.source.ClassPathConfigSource.*;
 import static cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolvers.*;
 
 /**
- * The main entry point of the LifeConfig library. It allows
- * configuring and creating a dynamic proxy of a provided
- * interface whose methods implements dynamically reading from
- * a property file of various formats (java config, hocon) and
- * sources (file, classpath resource) and return values for
- * given keys.
- *
- * <br/>
- *
- * One of the advantage of this library is the ability to read
- * fresh properties. If a content of a property file changes
- * during lifetime of an application, LifeConfig detects
- * such changes and reflects them in values returned by methods
- * of the configuration interface (dynamic proxy).
- *
- * <br/>
- *
- * <h3>Format</h3>
- *
- * At this time LifeConfig supports following formats:
- * <ul>
- *     <li>java properties</li>
- *     <li>hocon</li>
- * </ul>
- *
- * It is possible to customize the format via method {@link #format(ConfigFormat)}
- * and implementing an interface {@link ConfigFormat}.
- *
- * <h3>Source</h3>
- *
- * At this time LifeConfig supports following resources:
- *
- * <ul>
- *     <li>file on a filesystem</li>
- *     <li>file on classpath (i.e. inside JAR etc.)</li>
- * </ul>
- *
- * It is possible to specify custom source of configuration by
- * implementing {@link ConfigSource} interface and setting in via
- * method {@link #from(ConfigSource)}.
- *
- *
- * Basic usage:
- * {@code
- *  MyConfig config = LifeConfig.pretending(MyConfig.class)
- *      .hocon()
- *      .fromFile("/home/user/myconfig.conf")
- *      .live()
- *      .load();
- *
- *  String name = config.getName();
- *  int age = config.getAge();
- * }
+ *  A main class of LifeConfig library, that allows specify configuration resource, format etc,
+ *  ending with a dynamic proxy providing configuration properties.
  *
  *  @see "https://github.com/jalasoft/LifeConfig"
  *
@@ -161,9 +110,10 @@ public final class LifeConfig<T> {
     }
 
     /**
-     *
-     * @param resourceName
-     * @return
+     * specifies that a file on classpath will be used as a source of configuration.
+     * @param resourceName must not be null or empty.
+     * @return the same LifeConfig
+     * @throws IllegalArgumentException if resourceName is null or empty.
      */
     public LifeConfig<T> fromClasspath(String resourceName) {
         mustNotBeNullOrEmpty(resourceName, "Resource name");

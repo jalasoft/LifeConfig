@@ -35,7 +35,7 @@ public interface ConfigSource {
 
     /**
      * Provides UTC epoch time in millis of the last modification.
-     * @return
+     * @return millis
      *
      * @throws IOException in case that an error occurred during
      * investigating the modification time
