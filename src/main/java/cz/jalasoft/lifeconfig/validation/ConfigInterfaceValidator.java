@@ -31,11 +31,11 @@ import static java.util.Arrays.stream;
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-07-26.
  */
-public final class ProxyInterfaceValidator {
+public final class ConfigInterfaceValidator {
 
     private final ConverterRepository converterRegistry;
 
-    public ProxyInterfaceValidator(ConverterRepository converterRegistry) {
+    public ConfigInterfaceValidator(ConverterRepository converterRegistry) {
         this.converterRegistry = converterRegistry;
     }
 
@@ -50,7 +50,7 @@ public final class ProxyInterfaceValidator {
 
     private void validateTypeIsInterface(Class<?> type) {
         if (!type.isInterface()) {
-            throw new ProxyInterfaceValidationException("Type %s is not an interface.", type);
+            throw new ConfigInterfaceValidationException("Type %s is not an interface.", type);
         }
     }
 
@@ -63,7 +63,7 @@ public final class ProxyInterfaceValidator {
         String prefix = prefixAnnotation.value();
 
         if (prefix.isEmpty()) {
-            throw new ProxyInterfaceValidationException("Key prefix on type %s must not be empty.", type);
+            throw new ConfigInterfaceValidationException("Key prefix on type %s must not be empty.", type);
         }
     }
 
@@ -88,7 +88,7 @@ public final class ProxyInterfaceValidator {
             return;
         }
         if (paramsCount > 0) {
-            throw new ProxyInterfaceValidationException("Number of arguments on %s is %d. Must be zero.", method, paramsCount);
+            throw new ConfigInterfaceValidationException("Number of arguments on %s is %d. Must be zero.", method, paramsCount);
         }
     }
 
@@ -100,7 +100,7 @@ public final class ProxyInterfaceValidator {
         Key annotation = method.getAnnotation(Key.class);
         String key = annotation.value();
         if (key.isEmpty()) {
-            throw new ProxyInterfaceValidationException("Method %s has annotation @Key whose value is an empty string. Provide non empty resolveKey.", method);
+            throw new ConfigInterfaceValidationException("Method %s has annotation @Key whose value is an empty string. Provide non empty resolveKey.", method);
         }
     }
 
@@ -118,7 +118,7 @@ public final class ProxyInterfaceValidator {
             }
         }
 
-        throw new ProxyInterfaceValidationException("Converter %s must have parameterless constructor.", converterType);
+        throw new ConfigInterfaceValidationException("Converter %s must have parameterless constructor.", converterType);
     }
 
     private Collection<Class<?>> returnTypeInterfacesForRecursiveValidation(Class<?> type) {

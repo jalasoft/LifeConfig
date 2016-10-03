@@ -15,7 +15,7 @@ import cz.jalasoft.lifeconfig.reader.ConvertingConfigReader;
 import cz.jalasoft.lifeconfig.reader.ReloadingConfigReader;
 import cz.jalasoft.lifeconfig.source.ConfigSource;
 import cz.jalasoft.lifeconfig.source.FileConfigSource;
-import cz.jalasoft.lifeconfig.validation.ProxyInterfaceValidator;
+import cz.jalasoft.lifeconfig.validation.ConfigInterfaceValidator;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -286,7 +286,7 @@ public final class LifeConfig<T> {
 
         checkAllInserted();
 
-        new ProxyInterfaceValidator(converterRepository).validate(type);
+        new ConfigInterfaceValidator(converterRepository).validate(type);
 
         LOGGER.debug("Validation of type " + type + " was successful");
 

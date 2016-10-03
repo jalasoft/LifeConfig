@@ -1,6 +1,7 @@
 package cz.jalasoft.lifeconfig.converterprovider;
 
 import cz.jalasoft.lifeconfig.converter.Converter;
+import cz.jalasoft.lifeconfig.converter.ConverterException;
 import cz.jalasoft.lifeconfig.converter.ConverterRepository;
 
 import java.lang.reflect.Method;
@@ -37,6 +38,23 @@ public final class ViaStringConverter implements ConverterProvider {
         }
 
         Converter<String, Object> converter = maybeConverter.get();
-        return converter;
+
+
+        return new Converter<Object, Object>() {
+            @Override
+            public Object convert(Object from) throws ConverterException {
+                return converter.convert(sourceValue.toString());
+            }
+
+            @Override
+            public Class<Object> sourceType() {
+                return Object.class;
+            }
+
+            @Override
+            public Class<Object> targetType() {
+                return (Class<Object>) targetType;
+            }
+        };
     }
 }

@@ -1,0 +1,15 @@
+delayMinutes: 23.345
+deletionMask: 122
+expirationDate: "2016-11-11T10:15:30"
+actual: true
+potgres:
+  config:
+    host: "jalasoft.cz"
+    port: 5432
+    dbName: "devices"
+    cred: "lasja02:huhu345"
+cassandra:
+  nodes:
+    - "lasja02.prg01.jalasoft.cz"
+    - "lasja02.prg02.jalasoft.cz"
+  credential: "honzales:prdales33"

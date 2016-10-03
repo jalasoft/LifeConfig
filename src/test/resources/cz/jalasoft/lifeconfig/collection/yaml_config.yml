@@ -1,0 +1,16 @@
+config :
+  names:
+    - Honza
+    - Michaela
+    - Jirka
+  notification :
+    defs:
+      - "WARN:this is somethig that does not fail"
+      - "ERROR:the world is being collapsed"
+  people:
+    - "Honza Lastovicka"
+    - "Jiri Karasek"
+    - "Misa Cerna"
+  addresses:
+    - "Delnicka 804, Kolin, country: czech_republic"
+    - "AntoninaDvoraka 1111, Kolin, country: czech_republic"
