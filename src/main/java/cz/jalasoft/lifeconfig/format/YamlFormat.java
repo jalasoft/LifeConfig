@@ -23,6 +23,18 @@ public final class YamlFormat implements ConfigFormat {
 
     private Map<String, Object> data;
 
+    public YamlFormat() {
+        checkSnakeYamlOnClasspath();
+    }
+
+    private void checkSnakeYamlOnClasspath() {
+        try {
+            Class.forName("org.yaml.snakeyaml.Yaml");
+        } catch (ClassNotFoundException exc) {
+            throw new IllegalStateException("SnakeYaml is not on classpath.");
+        }
+    }
+
     @Override
     public void reload(ConfigSource source) throws IOException {
         try (Reader reader = source.load()) {

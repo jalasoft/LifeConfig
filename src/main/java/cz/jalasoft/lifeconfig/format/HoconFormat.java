@@ -22,14 +22,14 @@ public final class HoconFormat implements ConfigFormat {
     private Config config;
 
     public HoconFormat() {
-        checkTypeSafeConfingOnClasspath();
+        checkTypeSafeConfigOnClasspath();
     }
 
-    private void checkTypeSafeConfingOnClasspath() {
+    private void checkTypeSafeConfigOnClasspath() {
         try {
             Class.forName("com.typesafe.config.Config");
         } catch (ClassNotFoundException exc) {
-            throw new IllegalStateException("Cannot load TypeSafeConfig library as a source of hocon configuration infrastructure.");
+            throw new IllegalStateException("TypeSafe config is not on classpath");
         }
     }
 

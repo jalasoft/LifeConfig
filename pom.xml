@@ -67,6 +67,7 @@
             <groupId>org.unitils</groupId>
             <artifactId>unitils-core</artifactId>
             <version>3.4.3</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

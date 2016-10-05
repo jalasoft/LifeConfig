@@ -53,7 +53,13 @@ LifeConfig simply abstracts details of format and source of configuration into a
 ##Maven
 
 LifeConfig library is available in Maven central repository:
-TODO
+```xml
+   <dependency>
+        <groupId>com.github.jalasoft</groupId>
+        <artifactId>LifeConfig</artifactId>
+        <version>1.0.1</version>
+   </dependency>
+```
 
 ##Basics
 

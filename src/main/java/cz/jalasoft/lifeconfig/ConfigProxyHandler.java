@@ -5,6 +5,8 @@ import cz.jalasoft.lifeconfig.annotation.IgnoreProperty;
 import cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolver;
 import cz.jalasoft.lifeconfig.reader.ConfigReader;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -57,6 +59,10 @@ final class ConfigProxyHandler implements InvocationHandler {
             throw new PropertyIgnoredException(method);
         }
 
+        if (method.isDefault()) {
+            return invokeDefaultMethodDirectly(proxy, method, args);
+        }
+
         String key = keyResolver.resolveKey(method);
         Optional<Object> maybeValue = configReader.readProperty(key, method);
 
@@ -65,6 +71,18 @@ final class ConfigProxyHandler implements InvocationHandler {
         }
 
         return nestedProxies.computeIfAbsent(method, m -> newProxy(m, key));
+    }
+
+    private Object invokeDefaultMethodDirectly(Object proxy, Method method, Object... args) throws Throwable {
+        Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+        constructor.setAccessible(true);
+
+        Class<?> declaringClass = method.getDeclaringClass();
+
+        return constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE)
+                        .unreflectSpecial(method, declaringClass)
+                        .bindTo(proxy)
+                        .invokeWithArguments(args);
     }
 
     private Object newProxy(Method method, String key) {
