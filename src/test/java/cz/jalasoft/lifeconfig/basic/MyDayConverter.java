@@ -2,20 +2,19 @@ package cz.jalasoft.lifeconfig.basic;
 
 
 import cz.jalasoft.lifeconfig.converter.ConverterException;
-import cz.jalasoft.lifeconfig.converter.StringConverter;
+import cz.jalasoft.lifeconfig.converter.TypesafeConverter;
 
 /**
  * Created by honzales on 12.5.15.
  */
-public class MyDayConverter extends StringConverter<MyDay> {
+public class MyDayConverter extends TypesafeConverter<String, MyDay> {
 
-    @Override
-    public Class<MyDay> targetType() {
-        return MyDay.class;
+    public MyDayConverter() {
+        super(String.class, MyDay.class);
     }
 
     @Override
-    public MyDay convert(String from) throws ConverterException {
+    public MyDay convertSafely(String from) throws ConverterException {
         String[] words = from.split("\\s");
         if (words.length != 2) {
             throw new ConverterException(from, String.class, MyDay.class, "Unexpected number of words: " + words.length);

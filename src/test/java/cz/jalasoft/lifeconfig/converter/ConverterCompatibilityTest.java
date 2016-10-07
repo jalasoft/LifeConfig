@@ -1,6 +1,7 @@
 package cz.jalasoft.lifeconfig.converter;
 
 import cz.jalasoft.lifeconfig.LifeConfig;
+import cz.jalasoft.lifeconfig.PropertyRetrievalException;
 import cz.jalasoft.lifeconfig.format.ConfigFormat;
 import cz.jalasoft.lifeconfig.format.HoconFormat;
 import cz.jalasoft.lifeconfig.format.JavaPropertyFormat;
@@ -13,7 +14,7 @@ import org.testng.annotations.Test;
  */
 public class ConverterCompatibilityTest {
 
-    @Test(expectedExceptions = ClassCastException.class)
+    @Test(expectedExceptions = PropertyRetrievalException.class)
     public void hoconConverterInAnnotationIsNotCompatibleWithReturnTypeOfTheInterfaceMethod() {
         converterInAnnotationIsNotCompatibleWithReturnTypeOfTheInterfaceMethod(new HoconFormat(), "hocon_config.conf");
     }
@@ -23,7 +24,7 @@ public class ConverterCompatibilityTest {
         converterInAnnotationIsNotCompatibleWithReturnTypeOfTheInterfaceMethod(new JavaPropertyFormat(), "java_config.conf");
     }
 
-    @Test(expectedExceptions = ClassCastException.class)
+    @Test(expectedExceptions = PropertyRetrievalException.class)
     public void yamlConverterInAnnotationIsNotCompatibleWithReturnTypeOfTheInterfaceMethod() {
         converterInAnnotationIsNotCompatibleWithReturnTypeOfTheInterfaceMethod(new YamlFormat(), "yaml_config.yml");
     }
@@ -51,20 +52,15 @@ public class ConverterCompatibilityTest {
     //--------------------------------------------------
     //CONVERTER
     //--------------------------------------------------
-    public static final class AgeConverter implements cz.jalasoft.lifeconfig.converter.Converter<String, Integer> {
+    public static final class AgeConverter extends TypesafeConverter<String, Integer> {
 
-        @Override
-        public Class<Integer> targetType() {
-            return Integer.class;
+
+        public AgeConverter() {
+            super(String.class, Integer.class);
         }
 
         @Override
-        public Class<String> sourceType() {
-            return String.class;
-        }
-
-        @Override
-        public Integer convert(String from) throws ConverterException {
+        public Integer convertSafely(String from) throws ConverterException {
             return Integer.valueOf(from);
         }
     }

@@ -1,7 +1,7 @@
 package cz.jalasoft.lifeconfig;
 
+import cz.jalasoft.lifeconfig.converter.TypesafeConverter;
 import cz.jalasoft.lifeconfig.converterprovider.*;
-import cz.jalasoft.lifeconfig.converter.Converter;
 import cz.jalasoft.lifeconfig.converter.ConverterRepository;
 import cz.jalasoft.lifeconfig.format.ConfigFormat;
 import cz.jalasoft.lifeconfig.format.HoconFormat;
@@ -71,7 +71,7 @@ public final class LifeConfig<T> {
      * @param converter a simpleConverter from string, must not be null
      * @throws java.lang.IllegalArgumentException if type or simpleConverter is null
      */
-    public <C> LifeConfig<T> addConverter(Converter<? extends Object, ? extends Object> converter) {
+    public <C> LifeConfig<T> addConverter(TypesafeConverter converter) {
         mustNotBeNull(converter, "Converter to be registered must not be null.");
 
         converterRepository.registerConverter(converter);

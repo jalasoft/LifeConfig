@@ -10,9 +10,8 @@ import java.util.Optional;
  */
 public final class ConverterRepository {
 
-    private static List<Converter<String, ?>> stringConverters = new ArrayList<>();
+    private static List<Converter> stringConverters = new ArrayList<>();
     static {
-        stringConverters.add(StringConverters.identity());
         stringConverters.add(StringConverters.toByte());
         stringConverters.add(StringConverters.toShort());
         stringConverters.add(StringConverters.toInteger());
@@ -30,25 +29,23 @@ public final class ConverterRepository {
         stringConverters.add(StringConverters.toISOLocalDateTime());
     }
 
-    private final List<Converter<Object, Object>> converters;
+    private final List<Converter> converters;
 
     public ConverterRepository() {
         converters = new ArrayList<>();
     }
 
-    public Optional<Converter<String, Object>> fromStringTo(Class<?> targetType) {
+    public Optional<Converter> fromStringTo(Class<?> targetType) {
         return stringConverters.stream()
-                .map(c -> (Converter<String, Object>) c)
                 .filter(c -> c.targetType().isAssignableFrom(targetType))
                 .findFirst();
     }
 
-    public void registerConverter(Converter<?, ?> converter) {
-        Converter<Object, Object> deCocotyzed = (Converter<Object, Object>) converter;
-        converters.add(deCocotyzed);
+    public void registerConverter(Converter converter) {
+        converters.add(converter);
     }
 
-    public Optional<Converter<Object, Object>> converter(Class<?> sourceType, Class<?> targetType) {
+    public Optional<Converter> converter(Class<?> sourceType, Class<?> targetType) {
         return converters.stream()
                 .filter(c -> c.sourceType().isAssignableFrom(sourceType))
                 .filter(c -> c.targetType().isAssignableFrom(targetType))

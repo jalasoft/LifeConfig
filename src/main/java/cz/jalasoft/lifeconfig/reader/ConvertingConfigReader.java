@@ -40,7 +40,7 @@ public final class ConvertingConfigReader implements ConfigReader {
             return Optional.empty();
         }
 
-        Converter<Object, Object> converter = converterProvider.converter(value.value(), method);
+        Converter converter = converterProvider.converter(value.value(), method);
         Object result = converter.convert(value.value());
         return Optional.of(result);
     }

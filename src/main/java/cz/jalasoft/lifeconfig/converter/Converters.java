@@ -6,7 +6,7 @@ package cz.jalasoft.lifeconfig.converter;
  */
 public class Converters {
 
-    public static Converter<Object, Object> identity(Class<?> type) {
+    public static Converter identity(Class<?> type) {
         return new Converter() {
             @Override
             public Object convert(Object from) throws ConverterException {

@@ -30,7 +30,7 @@ public final class ConverterAnnotationProvider implements ConverterProvider {
         }
 
         Converter annotation = method.getAnnotation(Converter.class);
-        cz.jalasoft.lifeconfig.converter.Converter<Object, Object> converter = converterFromAnnotation(annotation);
+        cz.jalasoft.lifeconfig.converter.Converter converter = converterFromAnnotation(annotation);
 
         Class<?> returnType = method.getReturnType();
         if (Collection.class.isAssignableFrom(returnType)) {
@@ -40,16 +40,16 @@ public final class ConverterAnnotationProvider implements ConverterProvider {
         return converter;
     }
 
-    private cz.jalasoft.lifeconfig.converter.Converter<Object,Object> converterFromAnnotation(Converter annotation) {
-        Class<? extends cz.jalasoft.lifeconfig.converter.Converter<? extends Object, ? extends Object>> converterType = annotation.value();
+    private cz.jalasoft.lifeconfig.converter.Converter converterFromAnnotation(Converter annotation) {
+        Class<? extends cz.jalasoft.lifeconfig.converter.Converter> converterType = annotation.value();
         try {
-            return (cz.jalasoft.lifeconfig.converter.Converter<Object,Object>) converterType.newInstance();
+            return converterType.newInstance();
         } catch (ReflectiveOperationException exc) {
             throw new RuntimeException("Cannot instantiate a converter " + converterType + ": " + exc.getMessage(), exc);
         }
     }
 
-    private cz.jalasoft.lifeconfig.converter.Converter collectionConverter(Object sourceValue, cz.jalasoft.lifeconfig.converter.Converter<Object,Object> itemConverter, Class<?> returnType) {
+    private cz.jalasoft.lifeconfig.converter.Converter collectionConverter(Object sourceValue, cz.jalasoft.lifeconfig.converter.Converter itemConverter, Class<?> returnType) {
         if (!(sourceValue instanceof Collection)) {
             throw new RuntimeException("Cannot convert property value of type " + sourceValue.getClass() + " to a collection.");
         }

@@ -39,12 +39,12 @@ public final class RegisteredConverterProvider implements ConverterProvider {
         Class<?> sourceType = sourceValue.getClass();
         Class<?> targetType = method.getReturnType();
 
-        Optional<Converter<Object, Object>> maybeConverter = converterRepository.converter(sourceType, targetType);
+        Optional<Converter> maybeConverter = converterRepository.converter(sourceType, targetType);
         if (!maybeConverter.isPresent()) {
             return decorated.converter(sourceValue, method);
         }
 
-        Converter<Object, Object> converter = maybeConverter.get();
+        Converter converter = maybeConverter.get();
         return converter;
     }
 
@@ -67,7 +67,7 @@ public final class RegisteredConverterProvider implements ConverterProvider {
                 return converter;
             }
 
-            Optional<Converter<Object, Object>> maybeItemConverter = converterRepository.converter(maybeSourceType.get(), maybeTargetType.get());
+            Optional<Converter> maybeItemConverter = converterRepository.converter(maybeSourceType.get(), maybeTargetType.get());
             if (!maybeItemConverter.isPresent()) {
                 return decorated.converter(sourceValue, method);
             }

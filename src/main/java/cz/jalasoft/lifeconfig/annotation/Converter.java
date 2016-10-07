@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Converter {
 
-    Class<? extends cz.jalasoft.lifeconfig.converter.Converter<? extends Object, ? extends Object>> value();
+    Class<? extends cz.jalasoft.lifeconfig.converter.Converter> value();
 }

@@ -6,10 +6,10 @@ package cz.jalasoft.lifeconfig.converter;
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-09-19.
  */
-public abstract class StringConverter<T> implements Converter<String, T> {
+public abstract class StringConverter implements Converter {
 
     @Override
-    public abstract T convert(String from) throws ConverterException;
+    public abstract Object convert(Object from) throws ConverterException;
 
     @Override
     public final Class<String> sourceType() {
@@ -17,5 +17,5 @@ public abstract class StringConverter<T> implements Converter<String, T> {
     }
 
     @Override
-    public abstract Class<T> targetType();
+    public abstract Class<?> targetType();
 }

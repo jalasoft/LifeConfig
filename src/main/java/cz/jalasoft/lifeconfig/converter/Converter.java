@@ -6,7 +6,7 @@ package cz.jalasoft.lifeconfig.converter;
  *
  * Created by Honza Lastovicka on 18.4.15.
  */
-public interface Converter<F, T> {
+public interface Converter {
 
     /**
      * Converts from F to T
@@ -15,17 +15,17 @@ public interface Converter<F, T> {
      * @throws ConverterException if a problem occurred during the conversion
      * @throws java.lang.IllegalArgumentException if from is null
      */
-    T convert(F from) throws ConverterException;
+    Object convert(Object from) throws ConverterException;
 
     /**
      * A type of a source object.
      * @return never null
      */
-    Class<F> sourceType();
+    Class<?> sourceType();
 
     /**
      * A type of a target object.
      * @return never null
      */
-    Class<T> targetType();
+    Class<?> targetType();
 }

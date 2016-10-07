@@ -9,14 +9,11 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolvers.prefixAnnotationBefore;
-import static cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolvers.standardMethodKeyResolver;
-import static cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolvers.staticPrefix;
+import static cz.jalasoft.lifeconfig.keyresolver.PropertyKeyResolvers.*;
 
 /**
  * @author Honza Lastovicka (lastovicka@avast.com)
@@ -44,8 +41,12 @@ final class ConfigProxyHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
             return invokeSafely(proxy, method, args);
-        } catch (UndeclaredThrowableException exc) {
-            throw exc.getUndeclaredThrowable();
+        } catch (RuntimeException exc) {
+            throw exc;
+        } catch (Exception exc) {
+            throw new PropertyRetrievalException(exc);
+        } catch (Throwable t) {
+            throw t;
         }
     }
 

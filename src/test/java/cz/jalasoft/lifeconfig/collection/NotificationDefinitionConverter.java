@@ -1,26 +1,20 @@
 package cz.jalasoft.lifeconfig.collection;
 
-import cz.jalasoft.lifeconfig.converter.Converter;
 import cz.jalasoft.lifeconfig.converter.ConverterException;
+import cz.jalasoft.lifeconfig.converter.TypesafeConverter;
 
 /**
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-09-08.
  */
-final class NotificationDefinitionConverter implements Converter<String, NotificationDefinition> {
+final class NotificationDefinitionConverter extends TypesafeConverter<String, NotificationDefinition> {
 
-    @Override
-    public Class<String> sourceType() {
-        return String.class;
+    public NotificationDefinitionConverter() {
+        super(String.class, NotificationDefinition.class);
     }
 
     @Override
-    public Class<NotificationDefinition> targetType() {
-        return NotificationDefinition.class;
-    }
-
-    @Override
-    public NotificationDefinition convert(String from) throws ConverterException {
+    public NotificationDefinition convertSafely(String from) throws ConverterException {
         String[] tokens = from.split(":");
 
         if (tokens.length != 2) {

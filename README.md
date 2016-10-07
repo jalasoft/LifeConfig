@@ -106,8 +106,8 @@ TODO
 
 ###Annotations
 
-You might have noticed the annotation `@KeyPrefix` assigned to the configuration class in the example at the beginning. LifeConfig library comes with a set
-of annotations that makes the adaption between configuration file and a configuration interface more smooth. 
+You might have noticed the annotation `@KeyPrefix` associated with the configuration class in the example at the beginning. LifeConfig library comes with a set
+of annotations that makes the adaption between configuration files and configuration interfaces smooth. 
 
 #### `@KeyPrefix` is an annotation allowing prepend each key (configuration file)/method (configuration interface) with any custom string. This happens very often
  since usually we don't have out desired properties in the root of our configuration but it is sometimes hidden under one or more levels of configuration
@@ -175,6 +175,25 @@ In case that you invoke the method `getAge()` an exception `PropertyIgnoredExcep
  
 
 ### Converters
+As its name describes, converters are classes used for converting between values coming from configuration files and types returned by methods declared on configuration
+interface. Every converter must implement an interface `cz.jalasoft.lifeconfig.converter.Converter`. There are two ways to register a converter:
+
+* method `LifeConfig.addConverter()`
+* annotation `@Converter` defined on a method of a configuration interface
+
+The first way allows heving converter that might be used for conversion for more than one configuration method. The second approach is useful in case that we know
+and want to use a converter only for a given method invocation.
+
+Let's have following converter:
+
+
+```java
+Configuration config = LifeConfig.pretending(Configuration.class)
+                .addConverter(new CredentialsConverter())
+                .yaml()
+                .fromClasspath(getClass(), "yaml_config.yml")
+                .load();
+```
 
 ### Nesting
 

@@ -2,17 +2,15 @@ package cz.jalasoft.lifeconfig.nested;
 
 
 import cz.jalasoft.lifeconfig.LifeConfig;
-import cz.jalasoft.lifeconfig.converter.Converter;
 import cz.jalasoft.lifeconfig.converter.ConverterException;
+import cz.jalasoft.lifeconfig.converter.TypesafeConverter;
 import cz.jalasoft.lifeconfig.format.ConfigFormat;
 import cz.jalasoft.lifeconfig.format.HoconFormat;
 import cz.jalasoft.lifeconfig.format.JavaPropertyFormat;
 import cz.jalasoft.lifeconfig.format.YamlFormat;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
+import static org.testng.Assert.*;
 
 /**
  * @author Honza Lastovicka (lastovicka@avast.com)
@@ -26,19 +24,10 @@ public class NestedConfigurationTest {
                 .pretending(NestedConfiguration.class)
                 .format(provider)
                 .fromClasspath(getClass(), resourceName)
-                .addConverter(new Converter<String, NestedConfiguration.Material>() {
-                    @Override
-                    public Class<NestedConfiguration.Material> targetType() {
-                        return NestedConfiguration.Material.class;
-                    }
+                .addConverter(new TypesafeConverter<String, NestedConfiguration.Material>(String.class, NestedConfiguration.Material.class) {
 
                     @Override
-                    public Class<String> sourceType() {
-                        return String.class;
-                    }
-
-                    @Override
-                    public NestedConfiguration.Material convert(String from) throws ConverterException {
+                    public NestedConfiguration.Material convertSafely(String from) throws ConverterException {
                         if (from.equalsIgnoreCase("metal")) {
                             return NestedConfiguration.Material.METAL;
                         }

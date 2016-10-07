@@ -1,21 +1,20 @@
 package cz.jalasoft.lifeconfig.complex;
 
 import cz.jalasoft.lifeconfig.converter.ConverterException;
-import cz.jalasoft.lifeconfig.converter.StringConverter;
+import cz.jalasoft.lifeconfig.converter.TypesafeConverter;
 
 /**
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-09-14.
  */
-public final class CredentialsConverter extends StringConverter<Credentials> {
+public final class CredentialsConverter extends TypesafeConverter<String, Credentials> {
 
-    @Override
-    public Class<Credentials> targetType() {
-        return Credentials.class;
+    public CredentialsConverter() {
+        super(String.class, Credentials.class);
     }
 
     @Override
-    public Credentials convert(String from) throws ConverterException {
+    public Credentials convertSafely(String from) throws ConverterException {
         String[] segments = from.split(":");
 
         if (segments.length != 2) {

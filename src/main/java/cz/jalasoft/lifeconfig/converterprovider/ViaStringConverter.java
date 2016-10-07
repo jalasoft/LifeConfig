@@ -3,6 +3,7 @@ package cz.jalasoft.lifeconfig.converterprovider;
 import cz.jalasoft.lifeconfig.converter.Converter;
 import cz.jalasoft.lifeconfig.converter.ConverterException;
 import cz.jalasoft.lifeconfig.converter.ConverterRepository;
+import cz.jalasoft.lifeconfig.converter.StringyfyingConverterDecorator;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -32,29 +33,12 @@ public final class ViaStringConverter implements ConverterProvider {
     public Converter converter(Object sourceValue, Method method) throws ConverterNotFoundException {
         Class<?> targetType = method.getReturnType();
 
-        Optional<Converter<String, Object>> maybeConverter = converterRepository.fromStringTo(targetType);
+        Optional<Converter> maybeConverter = converterRepository.fromStringTo(targetType);
         if (!maybeConverter.isPresent()) {
             return decorated.converter(sourceValue, method);
         }
 
-        Converter<String, Object> converter = maybeConverter.get();
-
-
-        return new Converter<Object, Object>() {
-            @Override
-            public Object convert(Object from) throws ConverterException {
-                return converter.convert(sourceValue.toString());
-            }
-
-            @Override
-            public Class<Object> sourceType() {
-                return Object.class;
-            }
-
-            @Override
-            public Class<Object> targetType() {
-                return (Class<Object>) targetType;
-            }
-        };
+        Converter converter = maybeConverter.get();
+        return new StringyfyingConverterDecorator(converter);
     }
 }

@@ -1,26 +1,20 @@
 package cz.jalasoft.lifeconfig.collection;
 
-import cz.jalasoft.lifeconfig.converter.Converter;
 import cz.jalasoft.lifeconfig.converter.ConverterException;
+import cz.jalasoft.lifeconfig.converter.TypesafeConverter;
 
 /**
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-09-12.
  */
-public final class PersonConverter implements Converter<String, Person> {
+public final class PersonConverter extends TypesafeConverter<String, Person> {
 
-    @Override
-    public Class<String> sourceType() {
-        return String.class;
+    public PersonConverter() {
+        super(String.class, Person.class);
     }
 
     @Override
-    public Class<Person> targetType() {
-        return Person.class;
-    }
-
-    @Override
-    public Person convert(String from) throws ConverterException {
+    public Person convertSafely(String from) throws ConverterException {
         String[] names = from.split("\\s");
 
         if (names.length != 2) {

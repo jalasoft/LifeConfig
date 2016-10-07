@@ -11,7 +11,7 @@ import java.util.function.Supplier;
  * @author Honza Lastovicka (lastovicka@avast.com)
  * @since 2016-09-10.
  */
-public final class CollectionConverter implements Converter<Collection, Collection> {
+public final class CollectionConverter extends TypesafeConverter<Collection, Collection> {
 
     private static final Map<Class<?>, Supplier<Collection>> collectionFactory;
 
@@ -31,12 +31,14 @@ public final class CollectionConverter implements Converter<Collection, Collecti
     private final Class<?> collectionType;
 
     public CollectionConverter(Converter itemConverter, Class<?> collectionType) {
+        super(Collection.class, Collection.class);
+
         this.itemConverter = itemConverter;
         this.collectionType = collectionType;
     }
 
     @Override
-    public Collection convert(Collection from) throws ConverterException {
+    protected Collection convertSafely(Collection from) throws ConverterException {
         Collection result = newCollection();
 
         for(Object element : from) {
@@ -50,15 +52,5 @@ public final class CollectionConverter implements Converter<Collection, Collecti
     private Collection newCollection() {
         Supplier<Collection> factory = collectionFactory.get(collectionType);
         return factory.get();
-    }
-
-    @Override
-    public Class<Collection> sourceType() {
-        return Collection.class;
-    }
-
-    @Override
-    public Class<Collection> targetType() {
-        return Collection.class;
     }
 }
